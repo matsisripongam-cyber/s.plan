@@ -24,6 +24,7 @@
     started = true;
     document.documentElement.classList.remove('cms-wait');
     if (typeof window.__splanMain === 'function') window.__splanMain();
+    try { CMS.applyLayout(); } catch (e) { console.warn(e); }
     if (/[?&]edit=1/.test(location.search)) {
       var s = document.createElement('script'); s.src = 'edit.js'; document.body.appendChild(s);
     }
@@ -127,6 +128,51 @@
     });
   }
 
+
+  /* ---------- free positioning ----------
+     SITE.layout = { d: {key:{x,y,s,h}}, m: {...} }  d = screens 760px and wider, m = phones.
+     x / y are in vw so a move scales with the screen; s is a size factor; h hides the element.
+     CSS translate/scale compose with the page's own animated transforms. */
+  var MOBILE = 760, laidOut = [];
+  CMS.bp = function () { return window.innerWidth < MOBILE ? 'm' : 'd'; };
+  CMS.keyOf = function (el) {
+    var parts = [];
+    while (el && el.nodeType === 1 && el !== document.body) {
+      if (el.dataset.e) { parts.unshift('[data-e="' + el.dataset.e + '"]'); break; }
+      if (el.dataset.i) { parts.unshift('[data-i="' + el.dataset.i + '"]'); break; }
+      if (el.id) { parts.unshift('#' + CSS.escape(el.id)); break; }
+      var i = 1, sib = el;
+      while ((sib = sib.previousElementSibling)) if (sib.tagName === el.tagName) i++;
+      parts.unshift(el.tagName.toLowerCase() + ':nth-of-type(' + i + ')');
+      el = el.parentElement;
+    }
+    if (el === document.body) parts.unshift('body');
+    return parts.join(' > ');
+  };
+  function setOne(el, v) {
+    el.style.translate = v && (v.x || v.y) ? (v.x || 0).toFixed(3) + 'vw ' + (v.y || 0).toFixed(3) + 'vw' : '';
+    el.style.scale = v && v.s && Math.abs(v.s - 1) > 0.001 ? String(v.s) : '';
+    el.classList.toggle('cms-hid', !!(v && v.h));
+  }
+  CMS.setOne = setOne;
+  CMS.applyLayout = function () {
+    var L = (window.SITE && window.SITE.layout) || {}, set = L[CMS.bp()] || {};
+    laidOut.forEach(function (el) { setOne(el, null); });
+    laidOut = [];
+    Object.keys(set).forEach(function (k) {
+      var el; try { el = document.querySelector(k); } catch (e) { return; }
+      if (!el) return;
+      setOne(el, set[k]); laidOut.push(el);
+    });
+  };
+  (function () {
+    var st = document.createElement('style');
+    st.textContent = '.cms-hid{display:none!important}';
+    document.head.appendChild(st);
+    var last = null;
+    window.addEventListener('resize', function () { var b = CMS.bp(); if (b !== last) { last = b; if (started) CMS.applyLayout(); } });
+  })();
+
   function apply(d, full) {
     if (!d) return;
     window.SITE = d.kv || {};
@@ -134,6 +180,7 @@
     try { applyTexts(window.SITE.texts); } catch (e) { console.warn(e); }
     try { applyImages(window.SITE.images); } catch (e) { console.warn(e); }
     try { applyContact(window.SITE.contact); } catch (e) { console.warn(e); }
+    if (started) try { CMS.applyLayout(); } catch (e) { console.warn(e); }
     if (full) {
       try { applySections(window.SITE.sections); } catch (e) { console.warn(e); }
       try { applyProjects(d.projects); } catch (e) { console.warn(e); }
