@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>หลังบ้าน · S.PLAN</title>
+<link rel="icon" href="../img/logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Michroma&display=swap" rel="stylesheet">
+<style>
+:root{--brand:#c41d22;--ink:#1b1a18;--mute:#6f6a62;--line:#e4e0d8;--bg:#f6f4f0;--card:#fff;--ok:#1d7a46;--r:14px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "IBM Plex Sans Thai",system-ui,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--brand)}
+.hide{display:none!important}
+.btn{appearance:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:#bdb7ad}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.pri:hover{background:#a8161b}
+.btn.sm{padding:4px 10px;font-size:13px}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.danger{color:#b3171c}
+.btn:disabled{opacity:.5;cursor:default}
+input[type=text],input[type=email],input[type=password],input[type=url],input[type=number],select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:#fff}
+input:focus,select:focus,textarea:focus{outline:2px solid #c41d2255;border-color:var(--brand)}
+label{display:block;font-size:13px;color:var(--mute);margin:0 0 4px}
+.field{margin-bottom:14px}
+.row{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.hint{font-size:13px;color:var(--mute)}
+/* login */
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.login .box{width:min(420px,100%);background:#fff;border-radius:20px;padding:32px;box-shadow:0 20px 60px rgba(0,0,0,.08)}
+.logo{font-family:Michroma,sans-serif;letter-spacing:.08em;color:var(--brand);font-size:20px}
+.login h1{font-size:20px;margin:6px 0 20px;font-weight:600}
+.switch{margin-top:14px;font-size:14px;text-align:center}
+.msg{margin-top:12px;font-size:14px;min-height:1.2em}
+.msg.err{color:#b3171c}.msg.ok{color:var(--ok)}
+/* app */
+header{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:10px 20px;flex-wrap:wrap}
+header .sp{flex:1}
+nav.tabs{display:flex;gap:4px;flex-wrap:wrap}
+nav.tabs button{border:0;background:none;padding:8px 14px;border-radius:999px;cursor:pointer;color:var(--mute)}
+nav.tabs button.on{background:var(--ink);color:#fff}
+main{max-width:1100px;margin:0 auto;padding:24px 20px 120px}
+h2{font-size:22px;margin:0 0 4px;font-weight:600}
+.lead{color:var(--mute);margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.bar .sp{flex:1}
+/* project list */
+.plist{display:grid;gap:8px}
+.pitem{display:grid;grid-template-columns:28px 72px 1fr auto;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 12px 8px 8px}
+.pitem.drag{opacity:.4}.pitem.over{border-color:var(--brand)}
+.pitem .h{cursor:grab;color:#aaa;text-align:center;user-select:none;font-size:18px}
+.pitem img{width:72px;height:52px;object-fit:cover;border-radius:8px;background:#eee}
+.pitem .t{font-weight:500}.pitem .m{font-size:13px;color:var(--mute)}
+.pitem .acts{display:flex;gap:6px;align-items:center}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:#f0ece6;color:var(--mute);margin-left:6px}
+.tag.red{background:#fde8e8;color:#b3171c}.tag.off{background:#eee;color:#888}
+/* editor drawer */
+.drawer{position:fixed;inset:0;z-index:50;background:rgba(20,18,16,.45);display:flex;justify-content:flex-end}
+.drawer .panel{width:min(760px,100%);height:100%;overflow:auto;background:var(--bg);padding:24px;box-shadow:-20px 0 60px rgba(0,0,0,.2)}
+.drawer .head{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.drawer .head h3{flex:1;margin:0;font-size:20px;font-weight:600}
+.imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.im{position:relative;border-radius:10px;overflow:hidden;background:#eee;aspect-ratio:4/3;border:2px solid transparent;cursor:grab}
+.im img{width:100%;height:100%;object-fit:cover;display:block}
+.im.cover{border-color:var(--brand)}
+.im .tools{position:absolute;inset:auto 0 0 0;display:flex;gap:4px;padding:6px;background:linear-gradient(transparent,rgba(0,0,0,.65));flex-wrap:wrap}
+.im .tools button{border:0;border-radius:6px;padding:2px 7px;font-size:12px;cursor:pointer;background:#ffffffdd}
+.im .tools button.on{background:var(--brand);color:#fff}
+.im .badge{position:absolute;top:6px;left:6px;background:var(--brand);color:#fff;font-size:11px;padding:1px 7px;border-radius:999px}
+.im.over{border-color:#1b1a18}
+.drop{border:2px dashed #cfc9bf;border-radius:12px;padding:18px;text-align:center;color:var(--mute);cursor:pointer;margin-top:10px}
+.drop.on{border-color:var(--brand);color:var(--brand);background:#fff}
+fieldset{border:1px solid var(--line);border-radius:12px;padding:14px;margin:0 0 16px;background:#fff}
+legend{padding:0 6px;font-weight:600;font-size:14px}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ink);margin:0}
+/* sections */
+.slist{display:grid;gap:8px}
+.sitem{display:grid;grid-template-columns:28px 1fr auto auto;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.sitem .h{cursor:grab;color:#aaa;text-align:center;font-size:18px}
+.sitem.drag{opacity:.4}.sitem.over{border-color:var(--brand)}
+.sitem.fixed{background:#faf9f7;color:var(--mute)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:5px 12px;cursor:pointer;font-size:13px}
+.seg button.on{background:var(--ink);color:#fff}
+.swatch{display:flex;gap:10px;align-items:center}
+.swatch input[type=color]{width:46px;height:38px;border:1px solid var(--line);border-radius:10px;padding:2px;background:#fff;cursor:pointer}
+.preview{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+.preview .pv-top{padding:18px;color:#fff}
+.preview .pv-top b{font-family:var(--pv-disp,Michroma),sans-serif;font-size:22px;letter-spacing:.06em}
+.preview .pv-body{padding:18px}
+.preview .pv-btn{display:inline-block;border-radius:999px;padding:8px 16px;color:#fff;margin-top:8px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;z-index:100;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.big{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.big a.card{text-decoration:none;color:inherit;display:block}
+.big a.card:hover{border-color:var(--brand)}
+.big a.card b{display:block;font-size:17px;margin-bottom:4px}
+@media (max-width:640px){.pitem{grid-template-columns:22px 56px 1fr}.pitem .acts{grid-column:1/-1;justify-content:flex-end}.pitem img{width:56px;height:42px}.sitem{grid-template-columns:22px 1fr}.sitem .seg,.sitem .check{grid-column:2}}
+</style>
+</head>
+<body>
+
+<!-- sign in -->
+<section class="login hide" id="loginView">
+  <div class="box">
+    <div class="logo">S.PLAN</div>
+    <h1 id="authTitle">เข้าสู่ระบบหลังบ้าน</h1>
+    <form id="authForm">
+      <div class="field"><label for="em">อีเมล</label><input type="email" id="em" required autocomplete="email"></div>
+      <div class="field"><label for="pw">รหัสผ่าน</label><input type="password" id="pw" required minlength="8" autocomplete="current-password"></div>
+      <div class="field hide" id="codeWrap"><label for="code">รหัสตั้งค่า (ใช้ครั้งแรกครั้งเดียว)</label><input type="text" id="code" autocomplete="off"></div>
+      <button class="btn pri" style="width:100%" id="authBtn">เข้าสู่ระบบ</button>
+    </form>
+    <div class="msg" id="authMsg"></div>
+    <div class="switch"><a href="#" id="toSignup">สร้างบัญชีผู้ดูแลครั้งแรก</a> · <a href="#" id="toReset">ลืมรหัสผ่าน</a></div>
+  </div>
+</section>
+
+<section class="login hide" id="denyView">
+  <div class="box">
+    <div class="logo">S.PLAN</div>
+    <h1>บัญชีนี้ยังไม่มีสิทธิ์แก้เว็บ</h1>
+    <p class="hint">ถ้าเพิ่งสมัคร ให้ยืนยันอีเมลก่อน แล้วเข้าสู่ระบบใหม่ ถ้ายังไม่ได้ ให้ตรวจว่าใส่รหัสตั้งค่าถูกต้องตอนสมัคร</p>
+    <button class="btn" id="denyOut">ออกจากระบบ</button>
+  </div>
+</section>
+
+<!-- app -->
+<div id="app" class="hide">
+<header>
+  <div class="logo">S.PLAN</div>
+  <nav class="tabs" id="tabs">
+    <button data-t="works" class="on">ผลงาน</button>
+    <button data-t="sections">หัวข้อ</button>
+    <button data-t="theme">สีและฟอนต์</button>
+    <button data-t="contact">ช่องทางติดต่อ</button>
+    <button data-t="page">ข้อความและรูปบนหน้าเว็บ</button>
+  </nav>
+  <div class="sp"></div>
+  <a class="btn sm" href="../" target="_blank" rel="noopener">ดูเว็บ ↗</a>
+  <button class="btn sm ghost" id="logout">ออกจากระบบ</button>
+</header>
+<main>
+
+<!-- WORKS -->
+<section data-p="works">
+  <h2>ผลงาน</h2>
+  <p class="lead">ลากเพื่อเรียงลำดับ ลำดับนี้ใช้ในหน้า “ดูผลงานทั้งหมด” ส่วนผลงานที่ติดดาวจะขึ้นในแถบผลงานคัดสรร</p>
+  <div class="bar">
+    <button class="btn pri" id="addProj">+ เพิ่มผลงาน</button>
+    <span class="sp"></span>
+    <span class="hint" id="projCount"></span>
+    <button class="btn" id="saveOrder" disabled>บันทึกลำดับ</button>
+  </div>
+  <div class="plist" id="plist"></div>
+</section>
+
+<!-- SECTIONS -->
+<section data-p="sections" class="hide">
+  <h2>หัวข้อบนหน้าเว็บ</h2>
+  <p class="lead">ลากเพื่อสลับตำแหน่ง ซ่อนหัวข้อที่ไม่ใช้ และเลือกพื้นหลังขาวหรือเทา ส่วนหน้าปกด้านบนสุดอยู่กับที่</p>
+  <div class="slist" id="slist"></div>
+  <div class="bar" style="margin-top:16px"><button class="btn pri" id="saveSec">บันทึก</button><button class="btn" id="resetSec">คืนค่าเดิม</button></div>
+</section>
+
+<!-- THEME -->
+<section data-p="theme" class="hide">
+  <h2>สีและฟอนต์</h2>
+  <p class="lead">เปลี่ยนแล้วกดบันทึก เว็บจริงจะเปลี่ยนตาม</p>
+  <div class="big" style="align-items:start">
+    <div class="card">
+      <fieldset><legend>สี</legend>
+        <div class="field swatch"><input type="color" id="c_brand"><div><b>สีแบรนด์</b><div class="hint">ปุ่ม ตัวอักษร S.PLAN เส้นเน้น</div></div></div>
+        <div class="field swatch"><input type="color" id="c_brand_ink"><div><b>สีแบรนด์เข้ม</b><div class="hint">ตอนเอาเมาส์ชี้ปุ่ม และตัวหนังสือสีแดง</div></div></div>
+        <div class="field swatch"><input type="color" id="c_tone"><div><b>สีพื้นหัวข้อสีเทา</b><div class="hint">หัวข้อที่ตั้งเป็นพื้นเทา และแถบคำคม</div></div></div>
+        <div class="field swatch"><input type="color" id="c_paper"><div><b>สีพื้นหัวข้อสีขาว</b></div></div>
+        <div class="field swatch"><input type="color" id="c_ink"><div><b>สีตัวหนังสือหลัก</b></div></div>
+      </fieldset>
+      <fieldset><legend>ฟอนต์</legend>
+        <div class="field"><label>ฟอนต์หัวข้ออังกฤษ (S.PLAN, ตัวเลข)</label><select id="f_display"></select></div>
+        <div class="field"><label>ฟอนต์เนื้อหา (ภาษาไทย)</label><select id="f_body"></select></div>
+        <div class="field"><label>ขนาดตัวอักษรทั้งเว็บ <b id="scaleVal">100%</b></label><input type="range" id="f_scale" min="85" max="120" step="5" style="width:100%"></div>
+      </fieldset>
+      <div class="bar"><button class="btn pri" id="saveTheme">บันทึก</button><button class="btn" id="resetTheme">คืนค่าเดิม</button></div>
+    </div>
+    <div>
+      <div class="preview" id="pv">
+        <div class="pv-top" id="pvTop"><b>S.PLAN</b><div style="font-size:14px;opacity:.9">หัวข้อพื้นเทา</div></div>
+        <div class="pv-body" id="pvBody"><div style="font-weight:600;font-size:18px">ตั้งแต่เส้นสเก็ตช์แรก จนถึงวันส่งมอบกุญแจ</div><div style="opacity:.75">ตัวอย่างข้อความเนื้อหาในหัวข้อพื้นขาว</div><span class="pv-btn" id="pvBtn">CONTACT US</span></div>
+      </div>
+      <p class="hint" style="margin-top:10px">ตัวอย่างนี้เป็นภาพคร่าว ๆ กดบันทึกแล้วเปิดเว็บดูของจริงได้</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section data-p="contact" class="hide">
+  <h2>ช่องทางติดต่อ</h2>
+  <p class="lead">ลิงก์ LINE อีเมล และที่ส่งข้อมูลฟอร์ม (Google Sheet)</p>
+  <div class="card" style="max-width:640px">
+    <div class="field"><label>ลิงก์ LINE (ปุ่มแอดไลน์ทุกปุ่มบนเว็บ)</label><input type="url" id="k_line_url" placeholder="https://lin.ee/..."></div>
+    <div class="field"><label>LINE ID ที่แสดงบนเว็บ</label><input type="text" id="k_line_id" placeholder="@xxxx"></div>
+    <div class="field"><label>อีเมลบริษัท</label><input type="email" id="k_email"></div>
+    <div class="field"><label>ลิงก์ Apps Script ของฟอร์ม</label><input type="url" id="k_form_endpoint" placeholder="https://script.google.com/macros/s/.../exec"><div class="hint">เปลี่ยนเฉพาะตอนสร้าง Apps Script ใหม่</div></div>
+    <button class="btn pri" id="saveContact">บันทึก</button>
+  </div>
+</section>
+
+<!-- PAGE -->
+<section data-p="page" class="hide">
+  <h2>ข้อความและรูปบนหน้าเว็บ</h2>
+  <p class="lead">แก้ตรงบนหน้าเว็บจริง คลิกข้อความแล้วพิมพ์ทับ คลิกรูปเพื่ออัปโหลดรูปใหม่ จากนั้นกด “บันทึก” ที่แถบด้านล่าง</p>
+  <div class="big">
+    <a class="card" href="../?edit=1" target="_blank" rel="noopener"><b>เปิดโหมดแก้ไขหน้าเว็บ ↗</b><span class="hint">แก้หัวข้อ คำบรรยาย ปุ่ม รูปประกอบ และภาพหน้าปก</span></a>
+    <div class="card"><b>เคล็ดลับ</b><ul class="hint" style="margin:6px 0 0;padding-left:18px"><li>Shift + Enter เพื่อขึ้นบรรทัดใหม่</li><li>รูปใหญ่จะถูกย่อให้อัตโนมัติก่อนอัปโหลด</li><li>ผลงานแต่ละชิ้นแก้ที่แท็บ “ผลงาน”</li><li>ปุ่ม “คืนค่าเดิม” ในโหมดแก้ไขจะล้างข้อความที่แก้ทั้งหมด</li></ul></div>
+  </div>
+</section>
+</main>
+</div>
+
+<!-- project editor -->
+<div class="drawer hide" id="drawer">
+  <div class="panel">
+    <div class="head"><h3 id="dTitle">แก้ไขผลงาน</h3><button class="btn ghost" id="dClose">ปิด</button></div>
+    <form id="pform">
+      <fieldset><legend>ข้อมูลผลงาน</legend>
+        <div class="field"><label>ชื่อโครงการ</label><input type="text" id="p_name" required></div>
+        <div class="row">
+          <div class="field"><label>ปี</label><input type="text" id="p_year" inputmode="numeric" placeholder="2026"></div>
+          <div class="field"><label>สถานที่</label><input type="text" id="p_location"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>สไตล์</label><input type="text" id="p_style"></div>
+          <div class="field"><label>บริการ</label><input type="text" id="p_service" list="svcList"><datalist id="svcList"><option>Interior design</option><option>Interior design & decorations</option><option>Interior design & renovations</option><option>ผลงานก่อนก่อตั้งบริษัท</option></datalist></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>หมวด (ปุ่มกรอง)</label><select id="p_category"><option value="">อัตโนมัติจากบริการ</option><option value="design">ออกแบบ</option><option value="deco">ออกแบบ + ตกแต่ง</option><option value="reno">ออกแบบ + รีโนเวท</option><option value="pre">ก่อนก่อตั้งบริษัท</option></select></div>
+          <div class="field"><label>รหัส (ภาษาอังกฤษตัวเล็ก ใช้ในลิงก์)</label><input type="text" id="p_id" pattern="[a-z0-9-]+" required></div>
+        </div>
+        <label class="check"><input type="checkbox" id="p_published"> แสดงบนเว็บ</label>
+      </fieldset>
+
+      <fieldset><legend>รูปภาพ</legend>
+        <p class="hint" style="margin-top:0">ลากเพื่อเรียง · <b>ปก</b> = รูปปกในหน้ารวมผลงาน · <b>3D</b> = ภาพเรนเดอร์ · <b>↔</b> = จับคู่ภาพเรนเดอร์กับภาพงานจริง (กดที่รูปเรนเดอร์ก่อน แล้วกดรูปจริง)</p>
+        <div class="imgs" id="imgs"></div>
+        <div class="drop" id="drop">ลากรูปมาวาง หรือคลิกเพื่อเลือกรูป (เลือกหลายรูปได้)</div>
+        <div class="hint" id="upMsg"></div>
+      </fieldset>
+
+      <fieldset><legend>แถบผลงานคัดสรร</legend>
+        <label class="check" style="margin-bottom:12px"><input type="checkbox" id="f_on"> แสดงในแถบผลงานคัดสรร</label>
+        <div id="fBox">
+          <div class="row">
+            <div class="field"><label>ลำดับในแถบ (1 = แรก)</label><input type="number" id="f_order" min="1"></div>
+            <div class="field"><label>รูปที่ใช้ในแถบ</label><select id="f_image"></select></div>
+          </div>
+          <div class="field"><label>หัวข้อที่แสดง</label><input type="text" id="f_title"></div>
+          <div class="field"><label>บรรทัดรอง (เช่น สถานที่ · สไตล์)</label><input type="text" id="f_meta"></div>
+          <div class="field"><label>คำอธิบายรูป (สำหรับ Google และผู้พิการทางสายตา)</label><input type="text" id="f_alt"></div>
+        </div>
+      </fieldset>
+
+      <div class="bar"><button class="btn pri" type="submit">บันทึกผลงาน</button><span class="sp"></span><button class="btn danger" type="button" id="pDelete">ลบผลงานนี้</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="toast hide" id="toast"></div>
+<script src="../vendor/supabase.js"></script>
+<script>
+const URL_ = 'https://zddtttxnrdciyjlfqlyp.supabase.co';
+const KEY = 'sb_publishable_WFlbwDJFxwt7-RgcA1lChQ_92tvUvzf';
+const sb = supabase.createClient(URL_, KEY);
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const src = u => !u ? '' : /^(https?:|data:|blob:)/.test(u) ? u : '../' + u;
+let toastT;
+function toast(t){ const e=$('#toast'); e.textContent=t; e.classList.remove('hide'); clearTimeout(toastT); toastT=setTimeout(()=>e.classList.add('hide'),2600); }
+function bust(){ try{ localStorage.removeItem('splan-cms-v1'); }catch(e){} }
+
+const SECTIONS = [
+  ['intro','แนะนำบริษัท + ภาพผลงาน'],['workflow','5 ขั้นตอนการทำงาน'],['works','ผลงานคัดสรร (แถบเลื่อน)'],['clients','ลูกค้าที่เคยร่วมงาน'],
+  ['services','บริการของเรา'],['about','เกี่ยวกับเรา / สิ่งที่เรายึดถือ'],['index','ดูผลงานทั้งหมด (ตาราง)'],['contact','ติดต่อเรา']
+];
+const SEC_DEFAULT = {intro:'gray',workflow:'white',works:'gray',clients:'white',services:'gray',about:'white',index:'gray',contact:'white'};
+const THEME_DEFAULT = {brand:'#c41d22',brand_ink:'#b3171c',tone:'#848484',paper:'#f7f5f1',ink:'#1b1a18',font_display:'Michroma',font_body:'IBM Plex Sans Thai',scale:100};
+const FONTS_DISPLAY = ['Michroma','Montserrat','Poppins','Playfair Display','Cormorant Garamond','Chakra Petch','Bai Jamjuree'];
+const FONTS_BODY = ['IBM Plex Sans Thai','Prompt','Kanit','Sarabun','Noto Sans Thai','Anuphan','Bai Jamjuree','Mitr','Chakra Petch'];
+const FONT_Q = {'Michroma':'Michroma','Montserrat':'Montserrat:wght@400;600','Poppins':'Poppins:wght@400;600','Playfair Display':'Playfair+Display:wght@400;600','Cormorant Garamond':'Cormorant+Garamond:wght@500;600','Chakra Petch':'Chakra+Petch:wght@400;600','Bai Jamjuree':'Bai+Jamjuree:wght@400;600','IBM Plex Sans Thai':'IBM+Plex+Sans+Thai:wght@400;600','Prompt':'Prompt:wght@400;600','Kanit':'Kanit:wght@400;600','Sarabun':'Sarabun:wght@400;600','Noto Sans Thai':'Noto+Sans+Thai:wght@400;600','Anuphan':'Anuphan:wght@400;600','Mitr':'Mitr:wght@400;600'};
+
+let KV = {}, PROJ = [];
+
+/* ---------- auth ---------- */
+let mode = 'in';
+function setMode(m){
+  mode = m;
+  $('#authTitle').textContent = m==='up' ? 'สร้างบัญชีผู้ดูแล' : m==='reset' ? 'ตั้งรหัสผ่านใหม่' : 'เข้าสู่ระบบหลังบ้าน';
+  $('#authBtn').textContent = m==='up' ? 'สร้างบัญชี' : m==='reset' ? 'ส่งลิงก์ไปที่อีเมล' : 'เข้าสู่ระบบ';
+  $('#codeWrap').classList.toggle('hide', m!=='up');
+  $('#pw').closest('.field').classList.toggle('hide', m==='reset');
+  $('#pw').required = m!=='reset';
+  $('#toSignup').textContent = m==='in' ? 'สร้างบัญชีผู้ดูแลครั้งแรก' : 'กลับไปหน้าเข้าสู่ระบบ';
+  $('#authMsg').textContent=''; $('#authMsg').className='msg';
+}
+$('#toSignup').onclick = e => { e.preventDefault(); setMode(mode==='in'?'up':'in'); };
+$('#toReset').onclick = e => { e.preventDefault(); setMode('reset'); };
+$('#authForm').onsubmit = async e => {
+  e.preventDefault();
+  const em=$('#em').value.trim(), pw=$('#pw').value, m=$('#authMsg');
+  m.className='msg'; m.textContent='กำลังดำเนินการ…';
+  let r;
+  const back = location.origin + location.pathname;
+  if (mode==='up') r = await sb.auth.signUp({ email: em, password: pw, options: { data: { setup_code: $('#code').value.trim() }, emailRedirectTo: back } });
+  else if (mode==='reset') r = await sb.auth.resetPasswordForEmail(em, { redirectTo: back });
+  else r = await sb.auth.signInWithPassword({ email: em, password: pw });
+  if (r.error){ m.className='msg err'; m.textContent = thaiErr(r.error.message); return; }
+  if (mode==='up' && !r.data.session){ m.className='msg ok'; m.textContent='สร้างบัญชีแล้ว เปิดอีเมลเพื่อกดยืนยัน แล้วกลับมาเข้าสู่ระบบ'; return; }
+  if (mode==='reset'){ m.className='msg ok'; m.textContent='ส่งลิงก์ตั้งรหัสใหม่ไปที่อีเมลแล้ว'; return; }
+  boot();
+};
+function thaiErr(t){
+  if (/Invalid login/i.test(t)) return 'อีเมลหรือรหัสผ่านไม่ถูกต้อง';
+  if (/Email not confirmed/i.test(t)) return 'ยังไม่ได้ยืนยันอีเมล เปิดอีเมลแล้วกดลิงก์ยืนยันก่อน';
+  if (/already registered/i.test(t)) return 'อีเมลนี้สมัครไว้แล้ว ลองเข้าสู่ระบบ';
+  if (/Password should/i.test(t)) return 'รหัสผ่านต้องยาวอย่างน้อย 8 ตัว';
+  if (/rate limit/i.test(t)) return 'ลองบ่อยเกินไป รอสักครู่แล้วลองใหม่';
+  return t;
+}
+$('#logout').onclick = $('#denyOut').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+sb.auth.onAuthStateChange(async (ev) => {
+  if (ev === 'PASSWORD_RECOVERY') {
+    const np = prompt('ตั้งรหัสผ่านใหม่ (อย่างน้อย 8 ตัว)');
+    if (np) { const r = await sb.auth.updateUser({ password: np }); alert(r.error ? thaiErr(r.error.message) : 'เปลี่ยนรหัสผ่านแล้ว'); }
+  }
+});
+
+async function boot(){
+  const { data:{ session } } = await sb.auth.getSession();
+  $$('#loginView,#denyView,#app').forEach(e=>e.classList.add('hide'));
+  if (!session){ $('#loginView').classList.remove('hide'); setMode('in'); return; }
+  const a = await sb.from('admins').select('user_id').eq('user_id', session.user.id).maybeSingle();
+  if (!a.data){ $('#denyView').classList.remove('hide'); return; }
+  $('#app').classList.remove('hide');
+  await loadAll();
+}
+
+async function loadAll(){
+  const [kv, pr] = await Promise.all([ sb.from('site_kv').select('key,value'), sb.from('projects').select('*').order('sort_index') ]);
+  if (kv.error || pr.error){ toast('โหลดข้อมูลไม่สำเร็จ'); return; }
+  KV = {}; kv.data.forEach(r => KV[r.key] = r.value);
+  PROJ = pr.data;
+  renderProjects(); renderSections(); renderTheme(); renderContact();
+}
+
+async function putKV(key, value){
+  const r = await sb.from('site_kv').upsert({ key, value });
+  if (r.error){ toast('บันทึกไม่สำเร็จ: ' + r.error.message); return false; }
+  KV[key] = value; bust(); toast('บันทึกแล้ว ✓ เว็บจริงเปลี่ยนแล้ว'); return true;
+}
+
+/* ---------- tabs ---------- */
+$('#tabs').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  $$('#tabs button').forEach(x => x.classList.toggle('on', x===b));
+  $$('main > section').forEach(s => s.classList.toggle('hide', s.dataset.p !== b.dataset.t));
+  history.replaceState(null,'','#'+b.dataset.t);
+};
+if (location.hash){ const b = $(`#tabs button[data-t="${location.hash.slice(1)}"]`); if (b) setTimeout(()=>b.click()); }
+
+/* ---------- drag helper ---------- */
+function sortable(list, itemSel, onDrop){
+  let dragEl = null;
+  list.addEventListener('dragstart', e => { const it=e.target.closest(itemSel); if(!it) return; dragEl=it; it.classList.add('drag'); e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',''); });
+  list.addEventListener('dragend', () => { if(dragEl) dragEl.classList.remove('drag'); $$(itemSel+'.over').forEach(x=>x.classList.remove('over')); dragEl=null; });
+  list.addEventListener('dragover', e => { if(!dragEl) return; const it=e.target.closest(itemSel); if(!it||it===dragEl||it.parentNode!==list) return; e.preventDefault(); $$(itemSel+'.over').forEach(x=>x.classList.remove('over')); it.classList.add('over'); });
+  list.addEventListener('drop', e => { if(!dragEl) return; const it=e.target.closest(itemSel); if(!it||it===dragEl) return; e.preventDefault(); const r=it.getBoundingClientRect(); const after = (r.width>r.height*2) ? e.clientY>r.top+r.height/2 : e.clientX>r.left+r.width/2; it.parentNode.insertBefore(dragEl, after?it.nextSibling:it); onDrop(); });
+}
+
+/* ---------- projects ---------- */
+const CAT = {design:'ออกแบบ',deco:'ตกแต่ง',reno:'รีโนเวท',pre:'ก่อนก่อตั้ง'};
+function renderProjects(){
+  $('#projCount').textContent = `${PROJ.length} ผลงาน · แสดง ${PROJ.filter(p=>p.published).length}`;
+  $('#plist').innerHTML = PROJ.map(p => `
+    <div class="pitem" draggable="true" data-id="${esc(p.id)}">
+      <div class="h" title="ลากเพื่อย้าย">⋮⋮</div>
+      <img src="${esc(src(p.cover || (p.images||[])[0]))}" alt="" loading="lazy">
+      <div><div class="t">${esc(p.name)}${p.featured?'<span class="tag red">★ คัดสรร #'+esc(p.featured.order)+'</span>':''}${p.published?'':'<span class="tag off">ซ่อน</span>'}</div>
+      <div class="m">${esc(p.year)} · ${esc(p.location)} · ${esc(p.style)}${p.category?' · '+CAT[p.category]:''} · ${(p.images||[]).length} รูป</div></div>
+      <div class="acts"><button class="btn sm" data-a="up" title="เลื่อนขึ้น">↑</button><button class="btn sm" data-a="down" title="เลื่อนลง">↓</button><button class="btn sm" data-a="pub">${p.published?'ซ่อน':'แสดง'}</button><button class="btn sm pri" data-a="edit">แก้ไข</button></div>
+    </div>`).join('');
+}
+sortable($('#plist'), '.pitem', () => { const ids=$$('#plist .pitem').map(x=>x.dataset.id); PROJ.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id)); $('#saveOrder').disabled=false; });
+$('#plist').onclick = async e => {
+  const b = e.target.closest('button[data-a]'); if (!b) return;
+  const id = b.closest('.pitem').dataset.id, i = PROJ.findIndex(p=>p.id===id), p = PROJ[i];
+  if (b.dataset.a==='edit') return openEditor(p);
+  if (b.dataset.a==='pub'){
+    const r = await sb.from('projects').update({ published: !p.published }).eq('id', id);
+    if (r.error) return toast('ไม่สำเร็จ: '+r.error.message);
+    p.published = !p.published; bust(); renderProjects(); toast(p.published?'แสดงบนเว็บแล้ว':'ซ่อนแล้ว'); return;
+  }
+  const j = b.dataset.a==='up' ? i-1 : i+1;
+  if (j<0 || j>=PROJ.length) return;
+  [PROJ[i], PROJ[j]] = [PROJ[j], PROJ[i]]; renderProjects(); $('#saveOrder').disabled=false;
+};
+$('#saveOrder').onclick = async () => {
+  $('#saveOrder').disabled = true;
+  const rows = PROJ.map((p,i)=>({ ...p, sort_index:i }));
+  rows.forEach(r=>delete r.updated_at);
+  const r = await sb.from('projects').upsert(rows);
+  if (r.error){ toast('ไม่สำเร็จ: '+r.error.message); $('#saveOrder').disabled=false; return; }
+  PROJ.forEach((p,i)=>p.sort_index=i); bust(); toast('บันทึกลำดับแล้ว ✓');
+};
+
+/* editor */
+let ED = null, isNew = false, pairFrom = null;
+function slug(s){ return String(s).toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40); }
+$('#addProj').onclick = () => openEditor(null);
+function openEditor(p){
+  isNew = !p; pairFrom = null;
+  ED = p ? JSON.parse(JSON.stringify(p)) : { id:'', name:'', year:String(new Date().getFullYear()), location:'', style:'', service:'Interior design', category:null, cover:null, featured:null, images:[], images3d:null, pairs:null, published:true };
+  ED.images = ED.images || [];
+  $('#dTitle').textContent = isNew ? 'เพิ่มผลงานใหม่' : 'แก้ไข: ' + ED.name;
+  ['name','year','location','style','service'].forEach(k => $('#p_'+k).value = ED[k] || '');
+  $('#p_category').value = ED.category || '';
+  $('#p_id').value = ED.id; $('#p_id').readOnly = !isNew;
+  $('#p_published').checked = ED.published !== false;
+  const f = ED.featured;
+  $('#f_on').checked = !!f;
+  $('#f_order').value = f ? f.order : (Math.max(0,...PROJ.filter(x=>x.featured).map(x=>+x.featured.order||0))+1);
+  $('#f_title').value = f ? f.title||'' : ''; $('#f_meta').value = f ? f.meta||'' : ''; $('#f_alt').value = f ? f.alt||'' : '';
+  $('#fBox').classList.toggle('hide', !f);
+  $('#pDelete').classList.toggle('hide', isNew);
+  renderImgs(f ? f.image : null);
+  $('#drawer').classList.remove('hide'); $('#drawer .panel').scrollTop = 0;
+}
+$('#p_name').addEventListener('input', () => { if (isNew) $('#p_id').value = slug($('#p_name').value) || ''; });
+$('#f_on').onchange = () => {
+  $('#fBox').classList.toggle('hide', !$('#f_on').checked);
+  if ($('#f_on').checked){ if(!$('#f_title').value) $('#f_title').value=$('#p_name').value; if(!$('#f_meta').value) $('#f_meta').value=[$('#p_location').value,$('#p_style').value].filter(Boolean).join(' · '); if(!$('#f_alt').value) $('#f_alt').value=$('#p_name').value; }
+};
+$('#dClose').onclick = () => $('#drawer').classList.add('hide');
+$('#drawer').onclick = e => { if (e.target.id==='drawer') $('#drawer').classList.add('hide'); };
+
+function renderImgs(fimg){
+  const d3 = new Set(ED.images3d || []), pairs = ED.pairs || {};
+  const cover = ED.cover || ED.images[0];
+  $('#imgs').innerHTML = ED.images.map((u,i) => `
+    <div class="im ${u===cover?'cover':''} ${pairFrom===u?'over':''}" draggable="true" data-u="${esc(u)}">
+      <img src="${esc(src(u))}" alt="" loading="lazy">
+      ${u===cover?'<span class="badge">ปก</span>':''}${pairs[u]?'<span class="badge" style="left:auto;right:6px;background:#1b1a18">↔ '+(ED.images.indexOf(pairs[u])+1)+'</span>':''}
+      <div class="tools"><button type="button" data-a="cover" class="${u===cover?'on':''}">ปก</button><button type="button" data-a="3d" class="${d3.has(u)?'on':''}">3D</button>${d3.has(u)?`<button type="button" data-a="pair" class="${pairs[u]?'on':''}">↔</button>`:''}<button type="button" data-a="del">ลบ</button></div>
+    </div>`).join('');
+  const sel = $('#f_image'), cur = fimg || sel.value || cover;
+  sel.innerHTML = ED.images.map((u,i)=>`<option value="${esc(u)}">รูปที่ ${i+1}</option>`).join('');
+  if (cur) sel.value = cur;
+}
+sortable($('#imgs'), '.im', () => { ED.images = $$('#imgs .im').map(x=>x.dataset.u); renderImgs(); });
+$('#imgs').onclick = e => {
+  const im = e.target.closest('.im'); if (!im) return;
+  const u = im.dataset.u, b = e.target.closest('button[data-a]');
+  if (!b){ if (pairFrom && pairFrom!==u){ ED.pairs = ED.pairs||{}; ED.pairs[pairFrom]=u; pairFrom=null; renderImgs(); toast('จับคู่แล้ว'); } return; }
+  const a = b.dataset.a;
+  if (a==='cover') ED.cover = u;
+  if (a==='3d'){ const s=new Set(ED.images3d||[]); s.has(u)?s.delete(u):s.add(u); ED.images3d=[...s]; if(!s.has(u)&&ED.pairs) delete ED.pairs[u]; }
+  if (a==='pair'){ if (ED.pairs && ED.pairs[u]){ delete ED.pairs[u]; } else { pairFrom = u; toast('กดรูปงานจริงที่ต้องการจับคู่'); } }
+  if (a==='del'){ if(!confirm('ลบรูปนี้ออกจากผลงาน?')) return; ED.images = ED.images.filter(x=>x!==u); if(ED.cover===u) ED.cover=null; if(ED.images3d) ED.images3d=ED.images3d.filter(x=>x!==u); if(ED.pairs){ delete ED.pairs[u]; for(const k in ED.pairs) if(ED.pairs[k]===u) delete ED.pairs[k]; } }
+  renderImgs();
+};
+
+/* upload */
+function shrink(file, max=2400){
+  return new Promise(ok => {
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return ok(file);
+    const img = new Image(), u = URL.createObjectURL(file);
+    img.onload = () => { const s=Math.min(1,max/Math.max(img.width,img.height)); const c=document.createElement('canvas'); c.width=Math.round(img.width*s); c.height=Math.round(img.height*s); c.getContext('2d').drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(u);
+      c.toBlob(b => ok(b && b.size<file.size ? new File([b], file.name.replace(/\.\w+$/,'')+'.webp',{type:'image/webp'}) : file), 'image/webp', .86); };
+    img.onerror = () => ok(file); img.src = u;
+  });
+}
+async function uploadFiles(files){
+  const folder = 'projects/' + ($('#p_id').value || 'new');
+  const list = [...files].filter(f=>f.type.startsWith('image/'));
+  let n = 0;
+  for (const f0 of list){
+    $('#upMsg').textContent = `กำลังอัปโหลด ${++n}/${list.length}…`;
+    const f = await shrink(f0);
+    const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2,7)}.${(f.name.split('.').pop()||'webp').toLowerCase()}`;
+    const r = await sb.storage.from('media').upload(path, f, { contentType: f.type });
+    if (r.error){ $('#upMsg').textContent = 'อัปโหลดไม่สำเร็จ: ' + r.error.message; return; }
+    ED.images.push(sb.storage.from('media').getPublicUrl(path).data.publicUrl);
+    renderImgs();
+  }
+  $('#upMsg').textContent = list.length ? `อัปโหลดแล้ว ${list.length} รูป อย่าลืมกด “บันทึกผลงาน”` : '';
+}
+const drop = $('#drop');
+drop.onclick = () => { const i=document.createElement('input'); i.type='file'; i.accept='image/*'; i.multiple=true; i.onchange=()=>uploadFiles(i.files); i.click(); };
+drop.ondragover = e => { if (e.dataTransfer.types.includes('Files')){ e.preventDefault(); drop.classList.add('on'); } };
+drop.ondragleave = () => drop.classList.remove('on');
+drop.ondrop = e => { e.preventDefault(); drop.classList.remove('on'); uploadFiles(e.dataTransfer.files); };
+
+$('#pform').onsubmit = async e => {
+  e.preventDefault();
+  const id = $('#p_id').value.trim();
+  if (!/^[a-z0-9-]+$/.test(id)) return toast('รหัสใช้ได้เฉพาะ a-z 0-9 และขีด -');
+  if (isNew && PROJ.some(p=>p.id===id)) return toast('รหัสนี้มีอยู่แล้ว');
+  if (!ED.images.length) return toast('ใส่รูปอย่างน้อย 1 รูป');
+  const row = {
+    id, name:$('#p_name').value.trim(), year:$('#p_year').value.trim(), location:$('#p_location').value.trim(), style:$('#p_style').value.trim(), service:$('#p_service').value.trim(),
+    category: $('#p_category').value || null, published: $('#p_published').checked,
+    cover: ED.cover || null, images: ED.images, images3d: (ED.images3d&&ED.images3d.length)?ED.images3d:null, pairs: (ED.pairs&&Object.keys(ED.pairs).length)?ED.pairs:null,
+    featured: $('#f_on').checked ? { order:+$('#f_order').value||1, image:$('#f_image').value||ED.images[0], alt:$('#f_alt').value.trim(), title:$('#f_title').value.trim(), meta:$('#f_meta').value.trim() } : null,
+    sort_index: isNew ? -1 : ED.sort_index
+  };
+  if (isNew){ PROJ.forEach(p=>p.sort_index++); row.sort_index = 0; }
+  const r = await sb.from('projects').upsert(row);
+  if (r.error) return toast('บันทึกไม่สำเร็จ: ' + r.error.message);
+  if (isNew){ PROJ.unshift(row); const rows=PROJ.map((p,i)=>({...p,sort_index:i})); rows.forEach(x=>delete x.updated_at); await sb.from('projects').upsert(rows); }
+  else PROJ[PROJ.findIndex(p=>p.id===id)] = { ...ED, ...row };
+  bust(); renderProjects(); $('#drawer').classList.add('hide'); toast('บันทึกผลงานแล้ว ✓');
+};
+$('#pDelete').onclick = async () => {
+  if (!confirm(`ลบ “${ED.name}” ออกจากเว็บถาวร?\n(ถ้าแค่อยากซ่อนชั่วคราว ให้ใช้ปุ่ม “ซ่อน” แทน)`)) return;
+  const r = await sb.from('projects').delete().eq('id', ED.id);
+  if (r.error) return toast('ลบไม่สำเร็จ: ' + r.error.message);
+  PROJ = PROJ.filter(p=>p.id!==ED.id); bust(); renderProjects(); $('#drawer').classList.add('hide'); toast('ลบแล้ว');
+};
+
+/* ---------- sections ---------- */
+let SEC = [];
+function renderSections(){
+  const saved = Array.isArray(KV.sections) ? KV.sections : [];
+  const keys = saved.map(s=>s.key).filter(k=>SECTIONS.some(x=>x[0]===k));
+  SECTIONS.forEach(([k])=>{ if(!keys.includes(k)) keys.push(k); });
+  SEC = keys.map(k => { const s = saved.find(x=>x.key===k) || {}; return { key:k, visible: s.visible!==false, tone: s.tone || SEC_DEFAULT[k] }; });
+  drawSections();
+}
+function drawSections(){
+  const lab = Object.fromEntries(SECTIONS);
+  $('#slist').innerHTML = `<div class="sitem fixed"><div class="h">🔒</div><div><b>หน้าปก</b> <span class="hint">ภาพสเก็ตช์ → ภาพ 3D + โลโก้</span></div></div>` + SEC.map(s => `
+    <div class="sitem" draggable="true" data-k="${s.key}">
+      <div class="h">⋮⋮</div>
+      <div><b>${lab[s.key]}</b></div>
+      <div class="seg"><button type="button" data-tone="white" class="${s.tone==='white'?'on':''}">พื้นขาว</button><button type="button" data-tone="gray" class="${s.tone==='gray'?'on':''}">พื้นเทา</button></div>
+      <label class="check"><input type="checkbox" ${s.visible?'checked':''} data-vis> แสดง</label>
+    </div>`).join('');
+}
+sortable($('#slist'), '.sitem[data-k]', () => { const ks=$$('#slist .sitem[data-k]').map(x=>x.dataset.k); SEC.sort((a,b)=>ks.indexOf(a.key)-ks.indexOf(b.key)); });
+$('#slist').onclick = e => {
+  const it = e.target.closest('.sitem[data-k]'); if (!it) return; const s = SEC.find(x=>x.key===it.dataset.k);
+  const b = e.target.closest('button[data-tone]'); if (b){ s.tone = b.dataset.tone; drawSections(); }
+  if (e.target.matches('[data-vis]')) s.visible = e.target.checked;
+};
+$('#saveSec').onclick = () => putKV('sections', SEC);
+$('#resetSec').onclick = async () => { if (!confirm('คืนลำดับและสีพื้นหัวข้อเป็นค่าเริ่มต้น?')) return; if (await putKV('sections', [])) renderSections(); };
+
+/* ---------- theme ---------- */
+const TK = ['brand','brand_ink','tone','paper','ink'];
+function renderTheme(){
+  const t = { ...THEME_DEFAULT, ...(KV.theme||{}) };
+  TK.forEach(k => $('#c_'+k).value = t[k]);
+  $('#f_display').innerHTML = FONTS_DISPLAY.map(f=>`<option>${f}</option>`).join(''); $('#f_display').value = t.font_display;
+  $('#f_body').innerHTML = FONTS_BODY.map(f=>`<option>${f}</option>`).join(''); $('#f_body').value = t.font_body;
+  $('#f_scale').value = t.scale; preview();
+}
+function readTheme(){ const t={}; TK.forEach(k=>t[k]=$('#c_'+k).value); t.tone_2=t.tone; t.font_display=$('#f_display').value; t.font_body=$('#f_body').value; t.scale=+$('#f_scale').value; return t; }
+function preview(){
+  const t = readTheme();
+  $('#scaleVal').textContent = t.scale + '%';
+  const fams = [FONT_Q[t.font_display], FONT_Q[t.font_body]].filter(Boolean);
+  let l = $('#pvFonts'); if (!l){ l=document.createElement('link'); l.id='pvFonts'; l.rel='stylesheet'; document.head.appendChild(l); }
+  l.href = 'https://fonts.googleapis.com/css2?family=' + fams.join('&family=') + '&display=swap';
+  $('#pvTop').style.background = t.tone; $('#pvTop').querySelector('b').style.color = t.brand;
+  $('#pvTop').querySelector('b').style.fontFamily = `"${t.font_display}",sans-serif`;
+  $('#pvBody').style.cssText = `background:${t.paper};color:${t.ink};font-family:"${t.font_body}",sans-serif;font-size:${t.scale}%`;
+  $('#pvBtn').style.background = t.brand;
+}
+$('section[data-p="theme"]').addEventListener('input', preview);
+$('#saveTheme').onclick = () => {
+  const t = readTheme(), out = {};
+  // store only what differs from the built-in look, so the site keeps its exact original shades by default
+  Object.keys(t).forEach(k => { if (k==='tone_2' ? t.tone!==THEME_DEFAULT.tone : String(t[k])!==String(THEME_DEFAULT[k])) out[k]=t[k]; });
+  putKV('theme', out);
+};
+$('#resetTheme').onclick = async () => { if (!confirm('คืนสีและฟอนต์เป็นค่าเริ่มต้น?')) return; if (await putKV('theme', {})) renderTheme(); };
+
+/* ---------- contact ---------- */
+const CK = ['line_url','line_id','email','form_endpoint'];
+function renderContact(){ const c = KV.contact||{}; CK.forEach(k => $('#k_'+k).value = c[k]||''); }
+$('#saveContact').onclick = () => { const c={}; CK.forEach(k=>c[k]=$('#k_'+k).value.trim()); if (c.line_url && !/^https:\/\//.test(c.line_url)) return toast('ลิงก์ LINE ต้องขึ้นต้นด้วย https://'); putKV('contact', c); };
+
+boot();
+</script>
+</body>
+</html>

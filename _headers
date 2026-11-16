@@ -1,0 +1,7 @@
+/admin/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-cache
+/cms.js
+  Cache-Control: public, max-age=0, must-revalidate
+/edit.js
+  Cache-Control: public, max-age=0, must-revalidate
