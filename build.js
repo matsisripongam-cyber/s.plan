@@ -10,6 +10,7 @@ const SITE = 'https://splaninteriordesign.com';
 const SB_URL = 'https://zddtttxnrdciyjlfqlyp.supabase.co';
 const SB_KEY = 'sb_publishable_WFlbwDJFxwt7-RgcA1lChQ_92tvUvzf';
 const LINE = 'https://lin.ee/SlsU3O7';
+const SERVICES = require('./services.js');
 const today = new Date().toISOString().slice(0, 10);
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -70,6 +71,17 @@ h2{font-size:22px;margin:56px 0 14px;font-weight:600}
 .card img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;display:block;background:#e9e5de;transition:transform .4s}
 .card:hover img{transform:scale(1.02)}
 .card b{display:block;margin-top:8px;font-weight:500;line-height:1.4}.card span{font-size:14px;color:var(--mute)}
+
+.pts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:8px 0 0}
+.pt{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.pt b{display:block;margin-bottom:4px;font-weight:600}.pt span{color:var(--mute);font-size:15px}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.steps li{counter-increment:s;padding:14px 16px 14px 56px;position:relative;background:#fff;border:1px solid var(--line);border-radius:14px}
+.steps li:before{content:counter(s,decimal-leading-zero);position:absolute;left:16px;top:14px;font-family:Michroma,sans-serif;color:var(--brand);font-size:14px}
+.steps b{font-weight:600}
+details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:500}details p{margin:8px 0 0;color:var(--mute)}
+.svc{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.svc a{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;text-decoration:none;font-size:15px}.svc a:hover{border-color:var(--brand);color:var(--brand)}
 footer{border-top:1px solid var(--line);padding:24px clamp(16px,4vw,40px);font-size:14px;color:var(--mute);text-align:center}
 `;
 
@@ -101,7 +113,8 @@ function shell({ title, desc, url, image, body, ld }) {
 <header class="top">
   <a class="brand" href="/"><img src="/img/logo.png" alt="S.PLAN" width="32" height="30">S.PLAN</a>
   <span class="sp"></span>
-  <a class="btn" href="/works/">ผลงานทั้งหมด</a>
+  <a class="btn" href="/services/">บริการ</a>
+  <a class="btn" href="/works/">ผลงาน</a>
   <a class="btn line" href="${LINE}" target="_blank" rel="noopener">LINE</a>
 </header>
 <main>
@@ -109,7 +122,7 @@ ${body}
 <div class="cta"><p><b>อยากได้ห้องแบบนี้?</b>ปรึกษาเรื่องออกแบบ ตกแต่ง และรีโนเวทกับ S.PLAN ได้ฟรี บอกพื้นที่และงบคร่าว ๆ แล้วเราจะแนะนำแนวทางให้</p>
 <a class="btn red" href="/#contact">ขอใบเสนอราคา</a><a class="btn line" href="${LINE}" target="_blank" rel="noopener">แอด LINE</a></div>
 </main>
-<footer>© S.PLAN Interior Design Co., Ltd. · ออกแบบ ตกแต่ง และรีโนเวทภายใน ตั้งแต่ปี 2014 · <a href="/">splaninteriordesign.com</a></footer>
+<footer><div class="svc" style="justify-content:center;margin:0 0 12px">${SERVICES.map(v => `<a href="/services/${v.slug}/">${esc(v.h1)}</a>`).join('')}</div>© S.PLAN Interior Design Co., Ltd. · ออกแบบ ตกแต่ง และรีโนเวทภายใน ตั้งแต่ปี 2014 · <a href="/">splaninteriordesign.com</a></footer>
 </body>
 </html>
 `;
@@ -140,6 +153,7 @@ function projectPage(p, all) {
 <p class="lead">${esc(svc)} ${esc(p.name)} ${esc(p.location)} ในสไตล์ ${esc(p.style)} โดยทีม S.PLAN Interior Design ดูแลตั้งแต่ออกแบบ เลือกวัสดุ ไปจนถึงงานติดตั้งหน้างาน</p>
 ${cover ? `<img class="hero" src="${esc(rel(cover))}" alt="${esc(alt(0))}" width="1600" height="1000" fetchpriority="high">` : ''}
 <div class="grid">${rest.map((u, i) => `<img src="${esc(rel(u))}" alt="${esc(alt(i + 1))}" loading="lazy" width="800" height="600">`).join('')}</div>
+${(() => { const rel = SERVICES.filter(v => v.projects.includes(p.id)); return rel.length ? `<h2>บริการที่เกี่ยวข้อง</h2><div class="svc">${rel.map(v => `<a href="/services/${v.slug}/">${esc(v.h1)}</a>`).join('')}</div>` : ''; })()}
 <h2>ผลงานอื่นของ S.PLAN</h2>
 <div class="cards">${pick.map(cardHTML).join('')}</div>`;
   const ld = {
@@ -170,6 +184,61 @@ function listPage(all) {
   return shell({ title, desc, url, image: abs(all[0] && (all[0].cover || (all[0].images || [])[0])), body, ld });
 }
 
+
+const STEPS = [
+  ['คุยสโคปงานและสำรวจหน้างาน', 'ฟังโจทย์ สไตล์ที่ชอบ และงบคร่าว ๆ แล้ววัดพื้นที่จริง ดูโครงสร้างและงานระบบ เพื่อประเมินราคาเบื้องต้น'],
+  ['นำเสนอมู้ดบอร์ดและภาพ 3D', 'รวมโทนสี วัสดุ และเฟอร์นิเจอร์ วางผังการใช้งาน แล้วทำภาพ 3D เสมือนจริงให้เห็นก่อนสร้าง'],
+  ['ปรับแบบและสรุปงบประมาณ', 'ปรับแบบจนลงตัว ทำแบบก่อสร้าง (Shop Drawing) สเปกวัสดุ และใบเสนอราคาแยกรายการ'],
+  ['ผลิตและติดตั้ง คุมงานหน้างาน', 'ทีมช่างและทีมเฟอร์นิเจอร์ของเราเองผลิตและติดตั้ง ใช้วัสดุได้มาตรฐาน คุมงานตั้งแต่เริ่มจนเสร็จ'],
+  ['ตรวจรับและส่งมอบ', 'เดินตรวจงานกับคุณทีละจุด เก็บรายละเอียดให้เรียบร้อย แล้วส่งมอบพื้นที่']
+];
+
+function servicePage(v, all) {
+  const url = `${SITE}/services/${v.slug}/`;
+  const works = v.projects.map(id => all.find(p => p.id === id)).filter(Boolean);
+  const img = works[0] && (works[0].cover || (works[0].images || [])[0]);
+  const others = SERVICES.filter(x => x !== v);
+  const body = `
+<div class="crumb"><a href="/">หน้าแรก</a> / <a href="/services/">บริการ</a> / ${esc(v.h1)}</div>
+<h1>${esc(v.h1)}</h1>
+${v.intro.map(t => `<p class="lead">${esc(t)}</p>`).join('')}
+${img ? `<img class="hero" src="${esc(rel(img))}" alt="${esc(v.h1 + ' ผลงาน ' + works[0].name)}" width="1600" height="1000" fetchpriority="high">` : ''}
+<h2>ทำไมเลือก S.PLAN</h2>
+<div class="pts">${v.points.map(([a, b]) => `<div class="pt"><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join('')}</div>
+<h2>ขั้นตอนการทำงาน 5 ขั้นตอน</h2>
+<ol class="steps">${STEPS.map(([a, b]) => `<li><b>${esc(a)}</b><br><span style="color:var(--mute)">${esc(b)}</span></li>`).join('')}</ol>
+${works.length ? `<h2>ผลงานที่เกี่ยวข้อง</h2><div class="cards">${works.map(cardHTML).join('')}</div>` : ''}
+<h2>คำถามที่พบบ่อย</h2>
+${v.faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}
+<h2>บริการอื่นของเรา</h2>
+<div class="svc">${others.map(x => `<a href="/services/${x.slug}/">${esc(x.h1)}</a>`).join('')}</div>`;
+  const ld = { '@context': 'https://schema.org', '@graph': [
+    { '@type': 'Service', name: v.h1, serviceType: v.keyword, url, description: v.desc, provider: { '@id': SITE + '/#org' },
+      areaServed: ['กรุงเทพมหานคร', 'นนทบุรี', 'ปทุมธานี', 'สมุทรปราการ', 'Thailand'], image: img ? abs(img) : undefined },
+    { '@type': 'FAQPage', mainEntity: v.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+    { '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'หน้าแรก', item: SITE + '/' },
+      { '@type': 'ListItem', position: 2, name: 'บริการ', item: SITE + '/services/' },
+      { '@type': 'ListItem', position: 3, name: v.h1, item: url }] },
+    { '@type': 'Organization', '@id': SITE + '/#org', name: 'S.PLAN Interior Design', url: SITE + '/' }
+  ] };
+  return shell({ title: v.title, desc: v.desc, url, image: abs(img), body, ld });
+}
+
+function servicesHub(all) {
+  const url = SITE + '/services/';
+  const title = 'บริการออกแบบ ตกแต่ง และรีโนเวทภายใน | S.PLAN Interior Design';
+  const desc = 'บริการของ S.PLAN Interior Design ออกแบบภายในคอนโด บ้าน ออฟฟิศ และโชว์รูม รับตั้งแต่ออกแบบอย่างเดียว ออกแบบพร้อมตกแต่ง ไปจนถึงออกแบบพร้อมรีโนเวท ตั้งแต่ปี 2014';
+  const body = `
+<div class="crumb"><a href="/">หน้าแรก</a> / บริการ</div>
+<h1>บริการของเรา</h1>
+<p class="lead">${esc(desc)}</p>
+<div class="cards">${SERVICES.map(v => { const p = all.find(x => v.projects.includes(x.id)); const img = p && (p.cover || (p.images || [])[0]);
+  return `<a class="card" href="/services/${v.slug}/"><img src="${esc(rel(img))}" alt="${esc(v.h1)}" loading="lazy" width="400" height="300"><b>${esc(v.h1)}</b><span>${esc(v.desc.slice(0, 80))}…</span></a>`; }).join('')}</div>`;
+  const ld = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, url, description: desc };
+  return shell({ title, desc, url, image: abs((all[0] || {}).cover), body, ld });
+}
+
 (async () => {
   const all = (await loadProjects()).filter(p => p && /^[a-z0-9-]+$/.test(p.id || ''));
   const out = path.join(__dirname, 'works');
@@ -180,10 +249,17 @@ function listPage(all) {
     fs.writeFileSync(path.join(out, p.id, 'index.html'), projectPage(p, all));
   }
   fs.writeFileSync(path.join(out, 'index.html'), listPage(all));
-  const urls = [[SITE + '/', '1.0'], [SITE + '/works/', '0.8']].concat(all.map(p => [`${SITE}/works/${p.id}/`, '0.6']));
+  const sout = path.join(__dirname, 'services');
+  fs.rmSync(sout, { recursive: true, force: true });
+  for (const v of SERVICES) {
+    fs.mkdirSync(path.join(sout, v.slug), { recursive: true });
+    fs.writeFileSync(path.join(sout, v.slug, 'index.html'), servicePage(v, all));
+  }
+  fs.writeFileSync(path.join(sout, 'index.html'), servicesHub(all));
+  const urls = [[SITE + '/', '1.0'], [SITE + '/services/', '0.9']].concat(SERVICES.map(v => [`${SITE}/services/${v.slug}/`, '0.9'])).concat([[SITE + '/works/', '0.8']]).concat(all.map(p => [`${SITE}/works/${p.id}/`, '0.6']));
   fs.writeFileSync(path.join(__dirname, 'sitemap.xml'),
     '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     urls.map(([u, pr]) => `  <url><loc>${u}</loc><lastmod>${today}</lastmod><priority>${pr}</priority></url>`).join('\n') +
     '\n</urlset>\n');
-  console.log('built', all.length, 'project pages + /works/ + sitemap.xml');
+  console.log('built', all.length, 'project pages,', SERVICES.length, 'service pages + sitemap.xml');
 })().catch(e => { console.error(e); process.exit(1); });
